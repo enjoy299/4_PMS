@@ -1,0 +1,102 @@
+﻿# ==========================================================
+#  AI Web 自动化测试框架 —— Git 忽略规则
+#  原则:产物 / 缓存 / 敏感配置不入库;
+#        源码、需求输入(inputs)、00_explore 探索事实按约定保留提交;
+#        qoder_workspace 生成的执行/探索计划因含登录凭据痕迹，已取消入库（见下方规则）。
+# ==========================================================
+
+# ---------- Python 缓存与编译产物 ----------
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# ---------- 打包 / 分发产物 ----------
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# ---------- 虚拟环境 ----------
+.venv/
+venv/
+env/
+ENV/
+
+# ---------- 环境变量 / 敏感配置(含 APP_URL、测试账号密码,严禁提交)----------
+.env
+.env.local
+.env.*.local
+# 如需共享配置模板,可创建 .env.example 提交(下面这行保证它不被忽略)
+!.env.example
+
+# ---------- Qoder 生成的执行/探索计划（历史上含明文凭据，本地保留、不入库）----------
+# 模板与现存文件已脱敏，但计划仍属每次运行重新生成的短周期产物，与 output/06 同类。
+# 本目录的 README/其他文件如需版本管理可单独 ! 放行。
+qoder_workspace/test_plan*.md
+qoder_workspace/explore_plan.md
+
+# ---------- 测试 / 覆盖率缓存 ----------
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+
+# ---------- Playwright 运行产物 ----------
+test-results/
+playwright-report/
+.playwright/
+blob-report/
+playwright/.cache/
+
+# ---------- 流水线输出产物(output/00~06:报告、截图、导出 Excel 等,自动生成)----------
+# 放行四类需版本管理的资产,其余(04/05/06 等)仍忽略:
+#   1. 00_explore:页面事实/功能地图/探索记录(不可替代资产,02~06 的唯一事实输入);
+#   2. 01_business:业务全景图(含「确认结论(业务填)」人工拍板列);
+#   3. 02_split_requirements:拆分需求与风险清单(含人工拍板列,重跑无缓存会覆盖,需 git 兜底);
+#   4. 03_design:需求理解/测试点/风险台账/用例(含确认列,拍板结论跨批次携带,同样需 git 兜底;
+#      多批次历史由 scripts/_archive_batches.py 归档,避免快照无限堆积)。
+# 以及 output/README.md(流水线说明)。
+# 06_reports 等仍忽略:非体积问题,而是其中大量带时间戳的重复执行快照会持续堆积。
+# 注意:此处必须写 output/* 而不能写 output/ —— 父目录被整体排除时,Git 不再进入其子目录,
+# 下面的 !output/xx/ 重新纳入规则将完全失效。
+output/*
+!output/00_explore/
+!output/01_business/
+!output/02_split_requirements/
+!output/03_design/
+!output/README.md
+
+# ---------- 运行日志(忽略日志文件,保留 logs/README.md 说明)----------
+logs/*
+!logs/README.md
+*.log
+
+# ---------- AI 提示词工作区(自动生成 prompt/response,按你的选择忽略;保留 README 说明)----------
+ai_workspace/*
+!ai_workspace/README.md
+
+# ---------- Qoder IDE 生成的仓库知识库缓存(如需提交,删除下面这行即可)----------
+.qoder/repowiki/
+
+# ---------- Better Harness 生成的审查报告产物(自动生成,不入库;如需提交删除下面这行)----------
+.qoder/better-harness-runs/
+
+# ---------- Office / Excel 临时文件 ----------
+~$*.xls*
+*.tmp
+
+# ---------- 调试临时产物(tmp_*:命令行输出/符号扫描等一次性文件)----------
+tmp_*
+
+# ---------- IDE / 编辑器 ----------
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# ---------- 操作系统 ----------
+.DS_Store
+Thumbs.db
+desktop.ini
